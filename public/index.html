@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Builder &mdash; Claude Code</title>
+  <meta name="description" content="Learn to write better prompts for Claude Code. Compare simple vs detailed prompts across different LLM models.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Ambient background -->
+  <div class="ambient">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grain"></div>
+
+  <div class="app">
+    <!-- Nav -->
+    <nav class="topnav">
+      <div class="topnav-left">
+        <div class="logo">
+          <div class="logo-mark">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="url(#bolt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs><linearGradient id="bolt" x1="3" y1="2" x2="21" y2="22"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#06d6a0"/></linearGradient></defs>
+            </svg>
+          </div>
+          <span class="logo-text">prompt<span class="logo-accent">builder</span></span>
+        </div>
+      </div>
+      <div class="topnav-right">
+        <a href="https://aibuildmastery.com" target="_blank" rel="noopener" class="nav-link">AI Build Mastery</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Learn by comparing
+      </div>
+      <h1 class="hero-title">
+        <span class="line line-1">The difference between</span>
+        <span class="line line-2"><em>good</em> and <em class="great">great</em></span>
+        <span class="line line-3">is in the prompt.</span>
+      </h1>
+      <p class="hero-sub">Enter a website idea. Pick a model. See how prompt detail<br class="hide-mobile"> transforms what Claude Code builds for you.</p>
+    </section>
+
+    <!-- Command bar -->
+    <section class="command-section">
+      <div class="command-bar" id="commandBar">
+        <div class="command-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <input type="text" id="idea" placeholder="Describe a website idea..." autocomplete="off" spellcheck="false">
+        <div class="command-right">
+          <div class="model-selector">
+            <select id="model" aria-label="Select model">
+              <optgroup label="Anthropic">
+                <option value="anthropic/claude-sonnet-4" selected>Claude Sonnet 4</option>
+                <option value="anthropic/claude-haiku-4">Claude Haiku 4</option>
+                <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+              </optgroup>
+              <optgroup label="OpenAI">
+                <option value="openai/gpt-4o">GPT-4o</option>
+                <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                <option value="openai/o3-mini">o3-mini</option>
+              </optgroup>
+              <optgroup label="Google">
+                <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+                <option value="google/gemini-2.5-pro-preview">Gemini 2.5 Pro</option>
+              </optgroup>
+              <optgroup label="Meta">
+                <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+              </optgroup>
+              <optgroup label="DeepSeek">
+                <option value="deepseek/deepseek-chat">DeepSeek V3</option>
+                <option value="deepseek/deepseek-r1">DeepSeek R1</option>
+              </optgroup>
+              <optgroup label="Mistral">
+                <option value="mistralai/mistral-large-2411">Mistral Large</option>
+              </optgroup>
+            </select>
+          </div>
+          <button class="cmd-btn" id="generateBtn" onclick="window.app.generate()">
+            <span class="cmd-btn-text">Generate</span>
+            <span class="cmd-btn-keys"><kbd>↵</kbd></span>
+          </button>
+        </div>
+      </div>
+      <div class="suggestions">
+        <button class="chip" onclick="window.app.fill(this)">photography portfolio</button>
+        <button class="chip" onclick="window.app.fill(this)">recipe blog</button>
+        <button class="chip" onclick="window.app.fill(this)">SaaS landing page</button>
+        <button class="chip" onclick="window.app.fill(this)">coffee shop site</button>
+        <button class="chip" onclick="window.app.fill(this)">wedding countdown</button>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <div class="toast" id="toast">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      <span id="toastMsg"></span>
+    </div>
+
+    <!-- Results -->
+    <section class="results" id="results">
+      <div class="results-header">
+        <h2 class="results-title">Side by side</h2>
+        <div class="results-model" id="resultsModel"></div>
+      </div>
+
+      <div class="cards">
+        <!-- Simple -->
+        <div class="card card-simple">
+          <div class="card-glow"></div>
+          <div class="card-inner">
+            <div class="card-top">
+              <div class="card-label">
+                <span class="card-dot dot-orange"></span>
+                <span class="card-tag">Simple</span>
+              </div>
+              <button class="copy-btn" data-target="simple-output" onclick="window.app.copy(this)">
+                <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <p class="card-desc">What a beginner might type. Minimal detail, maximum ambiguity.</p>
+            <div class="card-output">
+              <pre id="simple-output"><span class="placeholder">Your simple prompt will appear here...</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed -->
+        <div class="card card-detailed">
+          <div class="card-glow"></div>
+          <div class="card-inner">
+            <div class="card-top">
+              <div class="card-label">
+                <span class="card-dot dot-green"></span>
+                <span class="card-tag">Detailed</span>
+              </div>
+              <button class="copy-btn" data-target="detailed-output" onclick="window.app.copy(this)">
+                <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <p class="card-desc">Production-grade prompt. Specific, structured, deploy-ready output.</p>
+            <div class="card-output">
+              <pre id="detailed-output"><span class="placeholder">Your detailed prompt will appear here...</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="insights">
+        <div class="insight-card">
+          <div class="insight-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg>
+          </div>
+          <h4>Why this matters</h4>
+          <p>The same AI model produces wildly different output depending on prompt specificity. A vague prompt gets a generic page. A detailed prompt gets a production site.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h4>What to include</h4>
+          <p>File structure, design system (colors, fonts, spacing), content sections, responsive breakpoints, SEO metadata, and deployment target. Be specific about what you want.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          </div>
+          <h4>Try different models</h4>
+          <p>Each model interprets prompts differently. Run the same idea through Claude, GPT-4o, and Gemini to see how they craft instructions. Learn what resonates.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Built for <a href="https://aibuildmastery.com" target="_blank" rel="noopener">AI Build Mastery</a></p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "prompt-builder",
+  "version": "1.0.0",
+  "description": "Generate simple vs detailed Claude Code prompts using any LLM",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
