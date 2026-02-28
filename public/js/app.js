@@ -30,18 +30,21 @@ Rules:
 - 1-3 sentences maximum
 - Keep it vague and casual, like how a beginner would ask
 - Don't include technical details, file structures, or design specs
-- The result should ask for a static HTML/CSS/JS website deployable to any hosting
+- The prompt MUST ask for a static website using only plain HTML, CSS, and JavaScript — this site will be published to GitHub Pages, so no server-side code, no frameworks, no build tools
 - Output ONLY the prompt text — no quotes, no explanation, no preamble`;
 
   const DETAILED_SYSTEM = `You are a prompt engineering assistant. The user will give you a website idea. Generate a DETAILED, COMPREHENSIVE, PRODUCTION-QUALITY prompt that someone would type into Claude Code to build that website.
 
+CRITICAL CONSTRAINT: The website MUST be static — plain HTML, CSS, and vanilla JavaScript ONLY. It will be deployed to GitHub Pages. No server-side code, no React, no Next.js, no build tools, no npm. Just files that a browser can open directly.
+
 Rules:
 - Thorough and specific (300-600 words)
-- Include: project file structure, design requirements (colors, typography, layout), content sections, technical requirements (semantic HTML, SEO, accessibility), and deployment notes
-- Specify static HTML, CSS, and vanilla JavaScript only — no frameworks, no build tools
+- Include: project file structure with index.html at the root, design requirements (colors, typography, layout), content sections, and technical requirements (semantic HTML, SEO, accessibility)
+- Explicitly state: static HTML, CSS, and vanilla JavaScript only — no frameworks, no build tools, no dependencies
 - Mention responsive design, mobile-first approach, and specific breakpoints
-- Include instructions for relative paths and realistic placeholder content
-- Use markdown formatting (headers, bullet points, code blocks)
+- Include GitHub Pages deployment requirements: relative paths only (never absolute like /page.html), a .nojekyll file in the root, and that the site must work when opened directly in a browser
+- Mention using Google Fonts via <link> tags, placeholder images via picsum.photos or similar
+- Use markdown formatting (headers, bullet points, code blocks) to structure the prompt
 - Output ONLY the prompt text — no quotes, no explanation, no preamble`;
 
   // ---- API ----
